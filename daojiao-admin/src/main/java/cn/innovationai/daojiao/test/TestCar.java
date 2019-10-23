@@ -1,19 +1,14 @@
 package cn.innovationai.daojiao.test;
 
-import com.openapi.sdk.service.DataExchangeService;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class TestCar {
 
-    /** 用户登陆
+  /*  *//** 用户登陆
      * 用户首次调用接口，须先登录，认证通过后生成令牌。
      令牌有效期默认为 3 天，登录后之前的令牌将立即失效，多服务调用业务接口时，建议由统一服
      务调用登录接口将令牌缓存起来，多个服务统一从共享缓存中获取令牌。
      令牌失效后再调用登录接口获取令牌，避免频繁调用登录接口，建议一天内登录次数不超过 10
      次，超过 10 次将触发安全系统报警。
-     * */
+     * *//*
     public void login() {
         try {
             Map<String, String> map = new HashMap<String, String>(4);
@@ -33,10 +28,10 @@ public class TestCar {
         }
     }
 
-    /** 一、 车辆最新位置查询（车牌号）接口
+    *//** 一、 车辆最新位置查询（车牌号）接口
      * 本接口提供指定车牌号的车辆最新位置查询。
-     * */
-    public static void vLastLocationV3() {
+     * *//*
+    public static voidvLastLocationV3vLastLocationV3vLastLocationV3 {
         try {
             Map<String, String> map = new HashMap<String, String>(3);
             map.put("token", "6212c649-c3ad-4b26-b186-e829a3ec0b53");
@@ -55,9 +50,9 @@ public class TestCar {
         }
     }
 
-    /** 一、 车辆最新位置查询（车牌号）接口
+    *//** 一、 车辆最新位置查询（车牌号）接口
      * 本接口提供指定车牌号的车辆最新位置查询。
-     * */
+     * *//*
     public static void vHisTrack24() {
         try {
             Map<String, String> map = new HashMap<String, String>(3);
@@ -78,9 +73,9 @@ public class TestCar {
         }
     }
 
-    /** 二、 行驶证识别信息查询接口
+    *//** 二、 行驶证识别信息查询接口
      * 本接口提供行驶证识别信息查询。
-     * */
+     * *//*
     public void vehicleLicense() {
         try {
             Map<String, String> map = new HashMap<String, String>(4);
@@ -100,9 +95,9 @@ public class TestCar {
         }
     }
 
-    /** 三、 身份证识别信息查询（正、反面）
+    *//** 三、 身份证识别信息查询（正、反面）
      * 本接口提供身份证识别信息查询。
-     * */
+     * *//*
     public void idCardLicense() {
         try {
             Map<String, String> map = new HashMap<String, String>(4);
@@ -131,6 +126,6 @@ public class TestCar {
         testCar.vHisTrack24();
 // testCar.vehicleLicense();
 // testCar.idCardLicense();
-    }
+    }*/
 
 }

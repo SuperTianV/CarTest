@@ -23,7 +23,7 @@ public class CarPositionRecord
     @TableId
 	private Long id;
 	/** 车牌号 */
-	private String vclN;
+	private String carNo;
 	/** 行程 */
 	private Long itineraryId;
 	/** 车辆定位纬度 */

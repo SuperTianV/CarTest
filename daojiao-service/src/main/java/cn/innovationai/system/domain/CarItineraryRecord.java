@@ -23,7 +23,7 @@ public class CarItineraryRecord
     @TableId
 	private Long id;
 	/** 车牌号 */
-	private String vclN;
+	private String carNo;
 	/** 行程信息ID */
 	private Long itInfoId;
 	/** 任务开始时间 */
