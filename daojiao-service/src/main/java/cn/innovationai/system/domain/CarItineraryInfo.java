@@ -24,6 +24,8 @@ public class CarItineraryInfo
 	private Long id;
 	/** 起始地坐标 */
 	private String startCoor;
+	/** 起始地坐标 */
+	private String name;
 	/** 目的地坐标 */
 	private String destCoor;
 	/** 起始地名称 */
@@ -32,17 +34,7 @@ public class CarItineraryInfo
 	private String destAdr;
 	/** 路程经过点 */
 	private String itPoints;
-	/** 第三方行程 id */
-	private String rid;
 	/** 订阅预警类型
-type=1 异常线路预警
-type=2 异常线路预警+停
-车
-type=3 异常线路预警+离
-线
-type=4 异常线路预警+停
-车+离线 */
-	private Integer type;
 	/** 帐号状态（0正常 1停用） */
 	private Integer status;
 	/** 删除标志（0代表存在 2代表删除） */

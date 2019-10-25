@@ -18,6 +18,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,7 @@ public class CarTask
             // 通过 https 方式调用，此方法内部会使用私钥生成签名参数 sign,私钥不会发送
             String zhiyunHttpRes = null;
             DecimalFormat df=new DecimalFormat("0.00000000");//设置保留位数
+            Date date = new Date();
             try {
                 DataExchangeService des = new DataExchangeService(5000, 8000);
                 zhiyunHttpRes = des.postHttps(url, map);
@@ -69,6 +71,7 @@ public class CarTask
                 carPositionRecord.setLon(Double.valueOf(split[0]));
                 carPositionRecord.setLat(Double.valueOf(split[1]));
                 carPositionRecord.setCarNo(vclN);
+                carPositionRecord.setCreateTime(date);
                 try {
                     carPositionRecordService.insert(carPositionRecord);
                 } catch (DuplicateKeyException e) {

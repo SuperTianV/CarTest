@@ -1,15 +1,7 @@
 <!DOCTYPE html>
-<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <meta charset="utf-8">
-    <title>欢迎</title>
-    <link rel="shortcut icon" href="favicon.ico">
-    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
-    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
-    <link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
-    <link href="../static/css/main/style.min862f.css" th:href="@{/css/main/style.min862f.css}" rel="stylesheet"/>
-    <link href="../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}" rel="stylesheet"/>
-    <link href="../static/ruoyi/css/ry-ui.css" th:href="@{/ruoyi/css/ry-ui.css}" rel="stylesheet"/>
+    <th:block th:include="include :: header('车辆轨迹')" />
 </head>
 
 <body class="gray-bg">
@@ -20,108 +12,144 @@
             </div>
         </div>
     </div>
-<div th:include="include::footer"></div>
-<script th:src="@{/ruoyi/js/common.js}"></script>
-<script th:src="@{/ruoyi/js/ry-ui.js}"></script>
+
+<th:block th:include="include :: footer" />
 <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.9&key=63298590ff6ca94e8bbbbfc150cc97d1&plugin=AMap.Autocomplete"></script>
 <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
-    <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
-
-    <script th:inline="javascript">
-
+<script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+<script th:inline="javascript">
+    var carPositionRecords = [[${carPositionRecords}]];
+    var carItineraryInfo = [[${carItineraryInfo}]];
+    var startCoor = carItineraryInfo.startCoor;
+    var destCoor = carItineraryInfo.destCoor;
+    //预设路径名
+    var carItineraryInfoName = carItineraryInfo.name;
+    //预设路径点
+    var itPoints = JSON.parse(carItineraryInfo.itPoints);
+    //地图中心点
+    var centerLon;
+    var centerLat;
+    //行驶路径终止坐标
+    var lastMarker;
+    var length = carPositionRecords.length;
+    //车辆信息
+    var lastPointTime,carNo = [[${carNo}]],itineraryId = [[${itineraryId}]];
+    if (length > 0){
+        var carPositionRecord = carPositionRecords[length -1];
+        var lastPlongitude =  carPositionRecord.lon;
+        var lastPlatitude =  carPositionRecord.lat;
+        lastPointTime = carPositionRecord.utc;
+        centerLon = lastPlongitude;
+        centerLat = lastPlatitude;
+    }else {
+        centerLon = startCoor.split(",")[0];
+        centerLat = startCoor.split(",")[1];
+    }
+    lastMarker = new AMap.Marker({
+        // containerClassNames: 'shape-RectangleFlagPin',
+        icon: "https://webapi.amap.com/images/car.png",
+        position: [centerLon,  centerLat],
+        title: '当前位置'
+    });
+    //地图定义
     var map = new AMap.Map("container", {
         resizeEnable: true,
-        // center: [116.397428, 39.90923],
-        // center: [107.772761, 36.587015],
-        // zooms: [3-9],
+        center: [centerLon, centerLat],
         zoom: 13 //设置地图显示的缩放级别
     });
-    // 创建三个点标记
-    var m1 = new AMap.Marker({
-        position: [116.49, 39.9]
-    });
-    var m2 = new AMap.Marker({
-        position: [116.29, 39.9]
-    });
-    var m3 = new AMap.Marker({
-        position: [116.69, 39.9],
-        icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png"
-    });
-    map.add(m1);
-    map.add(m2);
-    map.add(m3);
-
- /*   //自动适配到指定视野范围
-    document.querySelector("#fitblue").onclick = function(){
-        map.setFitView([m1, m2]);
+    if(carPositionRecords != '') {
+        //行驶路径
+        var lineArr = [];
+        for (var i=0;i<carPositionRecords.length;i++){
+            lineArr.push([carPositionRecords[i].lon,carPositionRecords[i].lat])
+        }
+        drawPolyline(lineArr);
     }
+   map.add(lastMarker);
 
-    //无参数时，自动自适应所有覆盖物
-    document.querySelector("#fitall").onclick = function(){
-        map.setFitView();
-    }*/
+   //行驶路径起始坐标
+    var startCoorMarker = new AMap.Marker({
+        map: map,
+        position: [startCoor.split(",")[0], startCoor.split(",")[1]],
+        title: '起点'
+    });
 
     AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function(PathSimplifier, $) {
-
         if (!PathSimplifier.supportCanvas) {
             alert('当前环境不支持 Canvas！');
             return;
         }
-
         var pathSimplifierIns = new PathSimplifier({
             zIndex: 100,
-            //autoSetFitView:false,
+            autoSetFitView:true,
             map: map, //所属的地图实例
-
             getPath: function(pathData, pathIndex) {
-
                 return pathData.path;
             },
             getHoverTitle: function(pathData, pathIndex, pointIndex) {
-
                 if (pointIndex >= 0) {
-                    //point
-                    return pathData.name + '，点：' + pointIndex + '/' + pathData.path.length;
+                    index = pointIndex + 1;
+                    return  pathData.name + '，点：'+ index + '/' + pathData.path.length;
                 }
-
                 return pathData.name + '，点数量' + pathData.path.length;
             },
             renderOptions: {
-
                 renderAllPointsIfNumberBelow: 100 //绘制路线节点，如不需要可设置为-1
             }
         });
-
         window.pathSimplifierIns = pathSimplifierIns;
-
         //设置数据
         pathSimplifierIns.setData([{
-            name: '路线0',
-            path: [
-                [116.405289, 39.904987],
-                [113.964458, 40.54664],
-                [111.47836, 41.135964],
-                [108.949297, 41.670904],
-                [106.380111, 42.149509],
-                [103.774185, 42.56996],
-                [101.135432, 42.930601],
-                [98.46826, 43.229964],
-                [95.777529, 43.466798],
-                [93.068486, 43.64009],
-                [90.34669, 43.749086],
-                [87.61792, 43.793308]
-            ]
+            name:carItineraryInfoName,
+            path: itPoints
         }]);
 
-        //对第一条线路（即索引 0）创建一个巡航器
-        var navg1 = pathSimplifierIns.createPathNavigator(0, {
-            loop: true, //循环播放
-            speed: 1000000 //巡航速度，单位千米/小时
-        });
-
-        navg1.start();
     });
 
+    function drawPolyline(datas) {
+        var polyline = new AMap.Polyline({
+            path: datas,            // 设置线覆盖物路径
+            strokeColor: '#3394ff',   // 线颜色
+            strokeOpacity: 1,         // 线透明度
+            strokeWeight: 3,          // 线宽
+            strokeStyle: 'solid',     // 线样式
+            strokeDasharray: [10, 5], // 补充线样式
+            geodesic: true            // 绘制大地线
+        });
+        polyline.setMap(map);
+    }
+    startTask();
+    function startTask(){//定时器
+        window.setInterval(function(){
+
+            getLocation();
+        }, 30 * 1000)
+    }
+    function getLocation(){
+        $.ajax({
+            type: 'post',
+            data:{
+                carNo:carNo,
+                itineraryId:itineraryId,
+                utc:lastPointTime
+            },
+            url: ctx + 'test/testCar/getCarPosition/',
+            success: function (data, status, xhr) {
+                var lineArr = [];
+                for (var i=0;i<data.length;i++){
+                    var lonlast = data[i].lon;
+                    var latlast = data[i].lat;
+                    lineArr.push([lonlast,latlast])
+                    if (i == data.length - 1) {
+                        //更新点标记
+                        lastMarker.setPosition([lonlast, latlast]);
+                        lastPointTime = carPositionRecord.utc;
+                    }
+                }
+                drawPolyline(lineArr);
+            }
+        })
+    };
 </script>
 </body>
 </html>

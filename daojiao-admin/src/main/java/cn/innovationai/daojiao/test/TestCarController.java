@@ -1,10 +1,21 @@
 package cn.innovationai.daojiao.test;
 
 import cn.innovationai.common.core.controller.BaseController;
+import cn.innovationai.common.utils.ToolUtil;
+import cn.innovationai.system.domain.CarItineraryInfo;
+import cn.innovationai.system.domain.CarItineraryRecord;
+import cn.innovationai.system.domain.CarPositionRecord;
+import cn.innovationai.system.service.ICarItineraryInfoService;
+import cn.innovationai.system.service.ICarItineraryRecordService;
+import cn.innovationai.system.service.ICarPositionRecordService;
+import cn.innovationai.system.service.IDoHttpService;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 摄像头 信息操作处理
@@ -17,15 +28,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TestCarController extends BaseController
 {
     private String prefix = "test/testCar";
+	@Autowired
+	ICarItineraryRecordService carItineraryRecordService;
+	@Autowired
+	ICarPositionRecordService carPositionRecordService;
+	@Autowired
+	ICarItineraryInfoService carItineraryInfoService;
 
-	/**
-	 * 修改摄像头
-	 */
-	@GetMapping("/index")
-	public String edit(ModelMap mmap)
+	@RequestMapping("/index/{carNo}/{itineraryId}")
+	public String getCarItinerary(ModelMap mmap, @PathVariable("carNo") String carNo, @PathVariable("itineraryId") Integer itineraryId)
 	{
-		mmap.put("camera", "1111");
-	    return prefix + "/index";
+		CarItineraryRecord carItineraryRecord = carItineraryRecordService.selectById(itineraryId);
+		CarItineraryInfo carItineraryInfo = carItineraryInfoService.selectById(carItineraryRecord.getItInfoId());
+		List<CarPositionRecord> carPositionRecords = carPositionRecordService.selectList(new EntityWrapper<CarPositionRecord>().eq("itinerary_id", itineraryId).eq("car_no", carNo));
+		mmap.put("carPositionRecords", carPositionRecords);
+		mmap.put("carItineraryInfo",carItineraryInfo);
+		mmap.put("carNo",carNo);
+		mmap.put("itineraryId",itineraryId);
+
+		return prefix + "/index";
+	}
+
+	@RequestMapping("/getCarPosition")
+	@ResponseBody
+	public Object getCarPosition( String carNo,  Integer itineraryId,  Long utc)
+	{
+		List<CarPositionRecord> carPositionRecords = carPositionRecordService.selectList(new EntityWrapper<CarPositionRecord>().eq("itinerary_id", itineraryId).eq("car_no", carNo).ge(ToolUtil.isNotEmpty(utc),"utc",utc));
+		return carPositionRecords;
 	}
 
 }
