@@ -161,4 +161,11 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         cal.add(Calendar.DAY_OF_MONTH, amount);
         return cal.getTime();
     }
+    // 增加分钟
+    public static Date formatAddMin(Date date, int amount){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MINUTE, amount);
+        return cal.getTime();
+    }
 }

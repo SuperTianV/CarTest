@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header('')"></head>
+<body class="white-bg">
+    <div class="ibox-content">
+        <form class="form-horizontal" id="form-carItineraryRecord-add">
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">车牌号：</label>
+				<div class="col-xs-8">
+					<input id="carNo" name="carNo" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">行程信息ID：</label>
+				<div class="col-xs-8">
+					<input id="itInfoId" name="itInfoId" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">任务开始时间：</label>
+				<div class="col-xs-8">
+					<input id="stime" name="stime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">任务结束时间：</label>
+				<div class="col-xs-8">
+					<input id="etime" name="etime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">第三方行程 id：</label>
+				<div class="col-xs-8">
+					<input id="rid" name="rid" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">订阅预警类型
+type=1 异常线路预警
+type=2 异常线路预警+停
+车
+type=3 异常线路预警+离
+线
+type=4 异常线路预警+停
+车+离线：</label>
+				<div class="col-xs-8">
+					<input id="type" name="type" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">帐号状态（0正常 1停止）：</label>
+				<div class="col-xs-8">
+					<input id="status" name="status" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">删除标志（0代表存在 2代表删除）：</label>
+				<div class="col-xs-8">
+					<input id="delFlag" name="delFlag" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">创建者：</label>
+				<div class="col-xs-8">
+					<input id="createBy" name="createBy" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">创建时间：</label>
+				<div class="col-xs-8">
+					<input id="createTime" name="createTime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">更新者：</label>
+				<div class="col-xs-8">
+					<input id="updateBy" name="updateBy" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">更新时间：</label>
+				<div class="col-xs-8">
+					<input id="updateTime" name="updateTime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-xs-3 control-label">备注：</label>
+				<div class="col-xs-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "car/carItineraryRecord"
+		$("#form-carItineraryRecord-add").validate({
+			rules:{
+				names:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-carItineraryRecord-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

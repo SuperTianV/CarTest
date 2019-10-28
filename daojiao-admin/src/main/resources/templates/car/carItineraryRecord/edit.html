@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('车辆轨迹')" />
+	<th:block th:include="include :: header('车辆轨迹')" />
 </head>
 
 <body class="gray-bg">
-    <div class="layui-row">
-        <div class="layui-col-lg12 layui-col-md12 ">
-            <div class="layui-col-md12 ">
-                <div class="search-collapse" style="width:100%;height:800px;margin-left: 8px;" id="container"></div>
-            </div>
-        </div>
-    </div>
+<div class="layui-row">
+	<div class="layui-col-lg12 layui-col-md12 ">
+		<div class="layui-col-md12 ">
+			<div class="search-collapse" style="width:100%;height:800px;margin-left: 8px;" id="container"></div>
+		</div>
+	</div>
+</div>
 
 <th:block th:include="include :: footer" />
 <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.9&key=63298590ff6ca94e8bbbbfc150cc97d1&plugin=AMap.Autocomplete"></script>
@@ -65,15 +65,15 @@
             lineArr.push([carPositionRecords[i].lon,carPositionRecords[i].lat]);
             if (carPositionRecords[i].deviateFlag == 1 ){
                 drawPolyline(lineArr,'#ff0b0b')
-                } else {
-                    drawPolyline(lineArr,'#3394ff')
-                }
+            } else {
+                drawPolyline(lineArr,'#3394ff')
+            }
         }
         // drawPolyline(lineArr);
     }
-   map.add(lastMarker);
+    map.add(lastMarker);
 
-   //行驶路径起始坐标
+    //行驶路径起始坐标
     var startCoorMarker = new AMap.Marker({
         map: map,
         position: [startCoor.split(",")[0], startCoor.split(",")[1]],
@@ -139,7 +139,7 @@
                 itineraryId:itineraryId,
                 utc:lastPointTime
             },
-            url: ctx + 'test/testCar/getCarPosition/',
+            url: ctx + 'car/carItineraryRecord/getCarPosition/',
             success: function (data, status, xhr) {
                 for (var i=1;i<data.length;i++){
                     var lineArr = [];

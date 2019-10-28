@@ -35,12 +35,12 @@ public class TestCarController extends BaseController
 	@Autowired
 	ICarItineraryInfoService carItineraryInfoService;
 
-	@RequestMapping("/index/{carNo}/{itineraryId}")
+	@RequestMapping("/index/{itineraryId}")
 	public String getCarItinerary(ModelMap mmap, @PathVariable("carNo") String carNo, @PathVariable("itineraryId") Integer itineraryId)
 	{
 		CarItineraryRecord carItineraryRecord = carItineraryRecordService.selectById(itineraryId);
 		CarItineraryInfo carItineraryInfo = carItineraryInfoService.selectById(carItineraryRecord.getItInfoId());
-		List<CarPositionRecord> carPositionRecords = carPositionRecordService.selectList(new EntityWrapper<CarPositionRecord>().eq("itinerary_id", itineraryId).eq("car_no", carNo));
+		List<CarPositionRecord> carPositionRecords = carPositionRecordService.selectList(new EntityWrapper<CarPositionRecord>().eq("itinerary_id", itineraryId).eq("car_no", carItineraryRecord.getCarNo()));
 		mmap.put("carPositionRecords", carPositionRecords);
 		mmap.put("carItineraryInfo",carItineraryInfo);
 		mmap.put("carNo",carNo);
